@@ -5,24 +5,23 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence, useSpring } from 'motion/react';
-import {
-  ArrowDown,
-  ArrowRight,
-  Leaf,
-  Smartphone,
-  Send,
-  Mic,
-  Paperclip,
-  Bot,
-  Github,
-  Linkedin,
+import { 
+  ArrowDown, 
+  ArrowRight, 
+  Leaf, 
+  Smartphone, 
+  Send, 
+  Mic, 
+  Paperclip, 
+  Bot, 
+  Github, 
+  Linkedin, 
   Rss,
   ExternalLink,
   CheckCircle2,
   AlertCircle
 } from 'lucide-react';
 import { cn } from './lib/utils';
-import { useAdaptivePreferences, useConnectionStatus } from './hooks/useAdaptivePreferences';
 
 // --- Components ---
 
@@ -65,14 +64,12 @@ const Navbar = ({ ecoMode, setEcoMode }: { ecoMode: boolean, setEcoMode: (v: boo
 };
 
 const Hero = () => {
-  const { prefersReducedMotion } = useAdaptivePreferences();
-
   return (
     <section className="min-h-screen flex flex-col justify-center max-w-screen-2xl mx-auto px-8 pt-32 md:pt-40">
-      <motion.div
-        initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 30 }}
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: prefersReducedMotion ? 0 : 0.8, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
         viewport={{ once: true }}
         className="max-w-4xl"
       >
@@ -90,18 +87,18 @@ const Hero = () => {
         </p>
         
         <div className="flex flex-wrap gap-6">
-          <motion.button
-            whileHover={prefersReducedMotion ? {} : { y: -4 }}
-            whileTap={prefersReducedMotion ? {} : { scale: 0.96 }}
+          <motion.button 
+            whileHover={{ y: -4 }}
+            whileTap={{ scale: 0.96 }}
             className="bg-primary text-on-primary px-10 py-5 rounded-xl font-black text-lg flex items-center gap-3"
             onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
           >
             Conoce mi trabajo <ArrowDown className="w-5 h-5" />
           </motion.button>
-
-          <motion.button
-            whileHover={prefersReducedMotion ? {} : { y: -4 }}
-            whileTap={prefersReducedMotion ? {} : { scale: 0.96 }}
+          
+          <motion.button 
+            whileHover={{ y: -4 }}
+            whileTap={{ scale: 0.96 }}
             className="px-10 py-5 rounded-xl font-black text-lg ghost-border text-white flex items-center gap-3"
             onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
           >
@@ -114,34 +111,30 @@ const Hero = () => {
 };
 
 const About = () => {
-  const { prefersReducedMotion } = useAdaptivePreferences();
-
   return (
     <section id="about" className="py-32 px-8 bg-surface-container-low/20">
       <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
         <motion.div
-          initial={{ opacity: 0, x: prefersReducedMotion ? 0 : -40 }}
+          initial={{ opacity: 0, x: -40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.8 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
           <div className="relative aspect-square rounded-3xl overflow-hidden ghost-border group">
-            <img
-              src="https://picsum.photos/seed/tech-profile/800/800"
-              alt="Kevin Kantule"
+            <img 
+              src="https://picsum.photos/seed/tech-profile/800/800" 
+              alt="Kevin Kantule" 
               className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
               referrerPolicy="no-referrer"
-              loading="lazy"
-              decoding="async"
             />
             <div className="absolute inset-0 bg-primary/10 mix-blend-overlay" />
           </div>
         </motion.div>
 
         <motion.div
-          initial={{ opacity: 0, x: prefersReducedMotion ? 0 : 40 }}
+          initial={{ opacity: 0, x: 40 }}
           whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.8 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
         >
           <h2 className="text-5xl font-black text-white mb-8 tracking-tighter">Sobre Mí</h2>
@@ -166,8 +159,6 @@ const About = () => {
 };
 
 const Services = () => {
-  const { prefersReducedMotion } = useAdaptivePreferences();
-
   const services = [
     {
       title: "Desarrollo de Agentes Autónomos",
@@ -195,9 +186,9 @@ const Services = () => {
           {services.map((service, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 30 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: prefersReducedMotion ? 0 : 0.5, delay: prefersReducedMotion ? 0 : i * 0.1 }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
               viewport={{ once: true }}
               className="p-10 rounded-3xl bg-surface-container-highest/20 ghost-border hover:bg-surface-container-highest/40 transition-all group"
             >
@@ -221,16 +212,11 @@ const Services = () => {
 
 const ProjectCard = ({ title, number, description, image, tag, delay = 0, className, ecoMode, onViewDetails, challenge, solution, approach }: any) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const { prefersReducedMotion, isTouchDevice } = useAdaptivePreferences();
-  const { effectiveType } = useConnectionStatus();
-
-  // Disable expensive animations on slow connections, touch devices, or when motion is reduced
-  const shouldAnimateCard = !prefersReducedMotion && !isTouchDevice && effectiveType !== '3g';
   const x = useSpring(0, { stiffness: 300, damping: 30 });
   const y = useSpring(0, { stiffness: 300, damping: 30 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !shouldAnimateCard || ecoMode) return;
+    if (!cardRef.current || ecoMode) return;
     const rect = cardRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
@@ -244,13 +230,13 @@ const ProjectCard = ({ title, number, description, image, tag, delay = 0, classN
   };
 
   return (
-    <motion.div
+    <motion.div 
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 40 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.8, delay: prefersReducedMotion ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
       viewport={{ once: true }}
       className={cn("group cursor-pointer", className)}
       onClick={onViewDetails}
@@ -262,16 +248,14 @@ const ProjectCard = ({ title, number, description, image, tag, delay = 0, classN
           ecoMode ? "grayscale brightness-75" : ""
         )}
       >
-        <motion.img
-          src={image}
+        <motion.img 
+          src={image} 
           alt={title}
           referrerPolicy="no-referrer"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 1200px"
           className={cn(
             "w-full h-full object-cover transition-transform duration-700",
-            !ecoMode && !isTouchDevice && shouldAnimateCard && "group-hover:scale-110"
+            !ecoMode && "group-hover:scale-110"
           )}
-          loading="lazy"
         />
         <div className="absolute inset-0 bg-surface-container-lowest/40 group-hover:bg-surface-container-lowest/10 transition-colors" />
         
@@ -326,7 +310,6 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
   const [feedback, setFeedback] = useState('');
   const [isSent, setIsSent] = useState(false);
   const [isSending, setIsSending] = useState(false);
-  const { prefersReducedMotion } = useAdaptivePreferences();
 
   const handleSend = async () => {
     if (!feedback.trim()) return;
@@ -363,19 +346,19 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
   return (
     <section id="feedback" className="py-32 bg-surface-container-low/30">
       <div className="max-w-3xl mx-auto px-8">
-        <motion.div
-          initial={{ opacity: 0, scale: prefersReducedMotion ? 1 : 0.95 }}
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: prefersReducedMotion ? 0 : 0.8 }}
+          transition={{ duration: 0.8 }}
           viewport={{ once: true }}
           className="bg-surface-container-lowest rounded-3xl p-8 md:p-12 ghost-border shadow-2xl relative overflow-hidden"
         >
           <AnimatePresence>
             {isSent && (
-              <motion.div
-                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -20 }}
+                exit={{ opacity: 0, y: -20 }}
                 className="absolute inset-0 bg-primary/10 backdrop-blur-md z-10 flex flex-col items-center justify-center text-center p-8"
               >
                 <CheckCircle2 className="w-16 h-16 text-primary mb-4" />
@@ -439,8 +422,6 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
 };
 
 const ContactSection = () => {
-  const { prefersReducedMotion } = useAdaptivePreferences();
-
   const links = [
     { label: 'Email', action: 'Escríbeme', url: 'mailto:kevin.kantule@gmail.com', icon: null },
     { label: 'Profesional', action: 'LinkedIn', url: 'https://www.linkedin.com/in/kevinkantule/', icon: Linkedin },
@@ -449,10 +430,9 @@ const ContactSection = () => {
 
   return (
     <section id="contact" className="py-32 px-8 text-center">
-      <motion.h2
+      <motion.h2 
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
-        transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
         className="text-5xl font-black text-white mb-16 tracking-tighter"
       >
         Hablemos.
@@ -509,12 +489,10 @@ const Footer = () => {
 export default function App() {
   const [ecoMode, setEcoMode] = useState(false);
   const [activeProject, setActiveProject] = useState<string | null>(null);
-  const { prefersReducedMotion, isTouchDevice } = useAdaptivePreferences();
 
   return (
     <div className={cn(
-      "min-h-screen selection:bg-primary selection:text-on-primary",
-      prefersReducedMotion ? "transition-none" : "transition-colors duration-1000",
+      "min-h-screen transition-colors duration-1000 selection:bg-primary selection:text-on-primary",
       ecoMode ? "bg-black" : "bg-surface"
     )}>
       <Navbar ecoMode={ecoMode} setEcoMode={setEcoMode} />

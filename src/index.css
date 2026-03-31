@@ -3,7 +3,7 @@
 
 @theme {
   --font-sans: "Manrope", ui-sans-serif, system-ui, sans-serif;
-
+  
   --color-primary: #b7c4ff;
   --color-on-primary: #0033a7;
   --color-surface: #0c0e11;
@@ -14,36 +14,13 @@
   --color-surface-container-highest: #252d36;
   --color-surface-bright: #252d36;
   --color-outline-variant: rgba(183, 196, 255, 0.15);
-
+  
   --radius-xl: 1.5rem;
 }
 
 @layer base {
   body {
     @apply bg-surface text-slate-300 antialiased selection:bg-primary selection:text-on-primary;
-  }
-
-  /* Respect reduced motion preferences for accessibility */
-  @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-      scroll-behavior: auto !important;
-    }
-  }
-
-  /* Respect user's light/dark mode preference */
-  @media (prefers-color-scheme: light) {
-    body {
-      @apply bg-slate-50 text-slate-800;
-    }
-
-    h1, h2, h3, h4, h5, h6 {
-      @apply text-slate-900;
-    }
   }
 }
 

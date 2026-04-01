@@ -3,585 +3,233 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence, useSpring } from 'motion/react';
-import { 
-  ArrowDown, 
-  ArrowRight, 
-  Leaf, 
-  Smartphone, 
-  Send, 
-  Mic, 
-  Paperclip, 
-  Bot, 
-  Github, 
-  Linkedin, 
-  Rss,
-  ExternalLink,
-  CheckCircle2,
-  AlertCircle
-} from 'lucide-react';
+import React, { useState } from 'react';
 import { cn } from './lib/utils';
+import { Translation, Language } from './types';
 
 // --- Components ---
-
-const Navbar = ({ ecoMode, setEcoMode }: { ecoMode: boolean, setEcoMode: (v: boolean) => void }) => {
-  return (
-    <nav className="fixed top-0 w-full z-50 glass border-t-0 border-x-0">
-      <div className="flex justify-between items-center px-8 py-4 max-w-screen-2xl mx-auto">
-        <span className="text-2xl font-black text-primary tracking-tighter uppercase">Kevin Kantule</span>
-        
-        <div className="hidden md:flex items-center gap-10">
-          <a href="#about" className="text-slate-400 hover:text-primary font-bold transition-colors">Sobre Mí</a>
-          <a href="#services" className="text-slate-400 hover:text-primary font-bold transition-colors">Servicios</a>
-          <a href="#work" className="text-slate-400 hover:text-primary font-bold transition-colors">Proyectos</a>
-        </div>
-
-        <div className="flex items-center gap-6">
-          <button 
-            onClick={() => setEcoMode(!ecoMode)}
-            className={cn(
-              "flex items-center gap-2 px-3 py-1.5 rounded-full ghost-border transition-all group",
-              ecoMode ? "bg-green-500/20 border-green-500" : "bg-surface-container-highest/50 hover:border-primary"
-            )}
-          >
-            <Leaf className={cn("w-4 h-4 transition-colors", ecoMode ? "text-green-400" : "text-slate-400")} />
-            <span className="text-[10px] uppercase tracking-widest font-bold text-slate-400 group-hover:text-white">
-              {ecoMode ? "Eco: ON" : "Eco: OFF"}
-            </span>
-          </button>
-          
-          <a 
-            href="#contact"
-            className="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/20"
-          >
-            Hablemos
-          </a>
-        </div>
-      </div>
-    </nav>
-  );
-};
-
-const Hero = () => {
-  return (
-    <section className="min-h-screen flex flex-col justify-center max-w-screen-2xl mx-auto px-8 pt-32 md:pt-40">
-      <motion.div 
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        viewport={{ once: true }}
-        className="max-w-4xl"
-      >
-        <span className="text-primary font-bold tracking-[0.3em] uppercase text-sm mb-6 block">
-          Software Developer | AI | Autonomous Agents
-        </span>
-        <h1 className="text-7xl md:text-9xl font-black tracking-tighter text-white leading-[0.9] mb-12">
-          Transformando ideas en <br />
-          <span className="italic text-primary">sistemas inteligentes</span>.
-        </h1>
-        <p className="text-xl md:text-2xl text-slate-400 max-w-3xl leading-relaxed mb-16">
-          Desarrollador de software radicado en <span className="text-white font-semibold">Panamá</span>. 
-          Evolucionando desde el ecosistema móvil hacia la próxima frontera tecnológica: 
-          el desarrollo de <span className="text-white">chatbots avanzados</span> y <span className="text-primary italic">agentes autónomos</span>.
-        </p>
-        
-        <div className="flex flex-wrap gap-6">
-          <motion.button 
-            whileHover={{ y: -4 }}
-            whileTap={{ scale: 0.96 }}
-            className="bg-primary text-on-primary px-10 py-5 rounded-xl font-black text-lg flex items-center gap-3"
-            onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            Conoce mi trabajo <ArrowDown className="w-5 h-5" />
-          </motion.button>
-          
-          <motion.button 
-            whileHover={{ y: -4 }}
-            whileTap={{ scale: 0.96 }}
-            className="px-10 py-5 rounded-xl font-black text-lg ghost-border text-white flex items-center gap-3"
-            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
-          >
-            Hablemos de tu proyecto <ArrowRight className="w-5 h-5" />
-          </motion.button>
-        </div>
-      </motion.div>
-    </section>
-  );
-};
-
-const About = () => {
-  return (
-    <section id="about" className="py-32 px-8 bg-surface-container-low/20">
-      <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-        <motion.div
-          initial={{ opacity: 0, x: -40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <div className="relative aspect-square rounded-3xl overflow-hidden ghost-border group">
-            <img 
-              src="https://picsum.photos/seed/tech-profile/800/800" 
-              alt="Kevin Kantule" 
-              className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-              referrerPolicy="no-referrer"
-            />
-            <div className="absolute inset-0 bg-primary/10 mix-blend-overlay" />
-          </div>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <h2 className="text-5xl font-black text-white mb-8 tracking-tighter">Sobre Mí</h2>
-          <div className="space-y-6 text-lg text-slate-400 leading-relaxed">
-            <p>
-              Mi pasión por la tecnología se traduce en la creación de soluciones que automatizan y optimizan procesos complejos.
-            </p>
-            <p>
-              Mi viaje en el desarrollo comenzó construyendo aplicaciones para <span className="text-white font-semibold">Android</span>, donde aprendí la importancia del rendimiento, la arquitectura sólida y la experiencia del usuario. Con la rápida evolución de la tecnología, adapté mi enfoque para resolver problemas de manera más interactiva y dinámica.
-            </p>
-            <p>
-              Hoy en día, me especializo en la <span className="text-primary font-semibold italic">inteligencia artificial aplicada</span>. Dedico la mayor parte de mi tiempo al diseño y despliegue de chatbots robustos que mejoran la comunicación y la eficiencia operativa.
-            </p>
-            <p>
-              Actualmente, estoy inmerso en la investigación e implementación de <span className="text-white font-semibold">agentes autónomos</span>, explorando cómo la orquestación de IA puede ejecutar tareas secuenciales, tomar decisiones y revolucionar el desarrollo de software y la automatización de procesos.
-            </p>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const Services = () => {
-  const services = [
-    {
-      title: "Desarrollo de Agentes Autónomos",
-      status: "En curso",
-      description: "Investigación y diseño de sistemas de IA capaces de planificar, usar herramientas y ejecutar tareas de forma independiente para automatizar flujos de trabajo complejos.",
-      icon: Bot
-    },
-    {
-      title: "Creación de Chatbots Inteligentes",
-      description: "Desarrollo de asistentes virtuales conversacionales impulsados por IA, diseñados para integrarse fluidamente en plataformas empresariales y mejorar la atención al cliente.",
-      icon: Send
-    },
-    {
-      title: "Desarrollo Móvil (Android)",
-      description: "Experiencia fundamental en la creación de aplicaciones nativas, estableciendo bases sólidas en lógica de programación y diseño de interfaces.",
-      icon: Smartphone
-    }
-  ];
-
-  return (
-    <section id="services" className="py-32 px-8">
-      <div className="max-w-screen-2xl mx-auto">
-        <h2 className="text-5xl font-black text-white mb-20 tracking-tighter text-center">Lo que hago</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {services.map((service, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              viewport={{ once: true }}
-              className="p-10 rounded-3xl bg-surface-container-highest/20 ghost-border hover:bg-surface-container-highest/40 transition-all group"
-            >
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                <service.icon className="w-7 h-7 text-primary" />
-              </div>
-              {service.status && (
-                <span className="text-[10px] uppercase tracking-widest font-bold text-primary mb-4 block">
-                  {service.status}
-                </span>
-              )}
-              <h3 className="text-2xl font-bold text-white mb-6 tracking-tight">{service.title}</h3>
-              <p className="text-slate-400 leading-relaxed">{service.description}</p>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-const ProjectCard = ({ title, number, description, image, tag, delay = 0, className, ecoMode, onViewDetails, challenge, solution, approach }: any) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const x = useSpring(0, { stiffness: 300, damping: 30 });
-  const y = useSpring(0, { stiffness: 300, damping: 30 });
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || ecoMode) return;
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    x.set((e.clientX - centerX) / 20);
-    y.set((e.clientY - centerY) / 20);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
-  return (
-    <motion.div 
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
-      viewport={{ once: true }}
-      className={cn("group cursor-pointer", className)}
-      onClick={onViewDetails}
-    >
-      <motion.div 
-        style={{ rotateX: y, rotateY: x, transformStyle: 'preserve-3d' }}
-        className={cn(
-          "relative aspect-[16/9] rounded-2xl overflow-hidden mb-8 bg-surface-container-high transition-all duration-500",
-          ecoMode ? "grayscale brightness-75" : ""
-        )}
-      >
-        <motion.img 
-          src={image} 
-          alt={title}
-          referrerPolicy="no-referrer"
-          className={cn(
-            "w-full h-full object-cover transition-transform duration-700",
-            !ecoMode && "group-hover:scale-110"
-          )}
-        />
-        <div className="absolute inset-0 bg-surface-container-lowest/40 group-hover:bg-surface-container-lowest/10 transition-colors" />
-        
-        {tag && (
-          <div className="absolute top-6 right-6 translate-z-10">
-            <span className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-[10px] font-bold uppercase tracking-widest border border-white/20 text-white">
-              {tag}
-            </span>
-          </div>
-        )}
-      </motion.div>
-
-      <div className="translate-z-20">
-        <h3 className="text-4xl font-bold text-white mb-6 tracking-tight flex items-center gap-4">
-          {title} <span className="text-primary text-lg font-normal opacity-50">{number}</span>
-        </h3>
-        
-        <div className="space-y-4 mb-8">
-          {challenge && (
-            <p className="text-slate-400 text-lg">
-              <span className="text-white font-bold">El Reto:</span> {challenge}
-            </p>
-          )}
-          {solution && (
-            <p className="text-slate-400 text-lg">
-              <span className="text-white font-bold">La Solución:</span> {solution}
-            </p>
-          )}
-          {approach && (
-            <p className="text-slate-400 text-lg">
-              <span className="text-white font-bold">El Enfoque:</span> {approach}
-            </p>
-          )}
-        </div>
-
-        <button 
-          onClick={(e) => {
-            e.stopPropagation();
-            onViewDetails();
-          }}
-          className="inline-flex items-center gap-2 text-primary font-bold group/btn"
-        >
-          Ver Detalles
-          <ArrowRight className="w-5 h-5 transform group-hover/btn:translate-x-2 transition-transform" />
-        </button>
-      </div>
-    </motion.div>
-  );
-};
-
-const AssistantSection = ({ activeProject }: { activeProject: string | null }) => {
-  const [feedback, setFeedback] = useState('');
-  const [isSent, setIsSent] = useState(false);
-  const [isSending, setIsSending] = useState(false);
-
-  const handleSend = async () => {
-    if (!feedback.trim()) return;
-    
-    setIsSending(true);
-    const userMessage = feedback;
-    setFeedback('');
-
-    try {
-      const response = await fetch('/api/feedback', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: userMessage, 
-          projectContext: activeProject || 'General' 
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setIsSent(true);
-        setTimeout(() => setIsSent(false), 5000);
-      } else {
-        throw new Error(data.error || 'Failed to send');
-      }
-    } catch (error) {
-      console.error("Error sending feedback:", error);
-    } finally {
-      setIsSending(false);
-    }
-  };
-
-  return (
-    <section id="feedback" className="py-32 bg-surface-container-low/30">
-      <div className="max-w-3xl mx-auto px-8">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="bg-surface-container-lowest rounded-3xl p-8 md:p-12 ghost-border shadow-2xl relative overflow-hidden"
-        >
-          <AnimatePresence>
-            {isSent && (
-              <motion.div 
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="absolute inset-0 bg-primary/10 backdrop-blur-md z-10 flex flex-col items-center justify-center text-center p-8"
-              >
-                <CheckCircle2 className="w-16 h-16 text-primary mb-4" />
-                <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Recibido!</h3>
-                <p className="text-slate-300">Tu mensaje ha sido enviado a Kevin. Gracias por el interés.</p>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="flex items-center gap-4 mb-12">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-on-primary">
-              <Bot className="w-6 h-6" />
-            </div>
-            <div>
-              <h4 className="text-white font-bold">Asistente de Kevin</h4>
-              <p className="text-xs text-slate-500 uppercase tracking-widest font-bold">Listo para dialogar</p>
-            </div>
-          </div>
-
-          <div className="space-y-8 mb-12">
-            <div className="flex gap-4">
-              <div className="bg-surface-container-highest/50 p-6 rounded-2xl rounded-tl-none max-w-md border-l-4 border-primary">
-                <p className="text-slate-200">
-                  {activeProject 
-                    ? `¿Qué te pareció el proyecto de ${activeProject}? Me encantaría conocer tu perspectiva o hablar de cómo puedo ayudarte.`
-                    : "¿Buscas implementar inteligencia artificial en tu próximo proyecto o liderar una iniciativa tecnológica innovadora? Hablemos."}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative">
-            <textarea 
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              className="w-full bg-surface-container-highest/30 border-none rounded-2xl p-6 text-white placeholder-slate-600 focus:ring-2 focus:ring-primary transition-all resize-none mb-4"
-              placeholder={activeProject ? `Escribe sobre ${activeProject}...` : "Escribe tu mensaje aquí..."}
-              rows={3}
-              disabled={isSending}
-            />
-            <div className="flex justify-between items-center">
-              <div className="flex gap-4">
-                <button className="w-12 h-12 rounded-full ghost-border text-slate-400 hover:text-primary hover:border-primary transition-all flex items-center justify-center">
-                  <Paperclip className="w-5 h-5" />
-                </button>
-              </div>
-              <button 
-                onClick={handleSend}
-                disabled={!feedback.trim() || isSending}
-                id="contact-btn"
-                className="bg-primary text-on-primary px-8 py-3 rounded-full font-black flex items-center gap-2 hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
-              >
-                {isSending ? 'Enviando...' : 'Contáctame ahora'} <Send className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  );
-};
-
-const ContactSection = () => {
-  const links = [
-    { label: 'Email', action: 'Escríbeme', url: 'mailto:kevin.kantule@gmail.com', icon: null },
-    { label: 'Profesional', action: 'LinkedIn', url: 'https://www.linkedin.com/in/kevinkantule/', icon: Linkedin },
-    { label: 'El Laboratorio', action: 'GitHub', url: 'https://github.com/KevinKantule', icon: Github },
-  ];
-
-  return (
-    <section id="contact" className="py-32 px-8 text-center">
-      <motion.h2 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        className="text-5xl font-black text-white mb-16 tracking-tighter"
-      >
-        Hablemos.
-      </motion.h2>
-      
-      <div className="flex flex-wrap justify-center gap-6">
-        {links.map((link, i) => (
-          <motion.a 
-            key={i}
-            href={link.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={{ scale: 1.05, borderColor: '#b7c4ff' }}
-            className="group px-10 py-6 bg-surface-container-highest/30 ghost-border rounded-2xl transition-all text-left min-w-[220px]"
-          >
-            <span className="block text-xs uppercase tracking-[0.2em] font-bold text-slate-500 mb-2">
-              {link.label}
-            </span>
-            <span className="text-white text-xl font-bold group-hover:text-primary flex items-center gap-3">
-              {link.action} {link.icon && <link.icon className="w-5 h-5" />}
-            </span>
-          </motion.a>
-        ))}
-      </div>
-    </section>
-  );
-};
-
-const Footer = () => {
-  return (
-    <footer className="w-full py-20 px-8 bg-surface-container-lowest border-t border-outline-variant">
-      <div className="flex flex-col md:flex-row justify-between items-center w-full max-w-screen-2xl mx-auto gap-8">
-        <div>
-          <p className="text-lg leading-relaxed text-slate-400">
-            Kevin Kantule — 2026. Transformando ideas en sistemas inteligentes.
-          </p>
-        </div>
-        
-        <div className="flex gap-12">
-          <a href="https://www.linkedin.com/in/kevinkantule/" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-primary transition-colors font-bold flex items-center gap-2">
-            LinkedIn <ExternalLink className="w-4 h-4" />
-          </a>
-          <a href="https://github.com/KevinKantule" target="_blank" rel="noopener noreferrer" className="text-slate-500 hover:text-primary transition-colors font-bold flex items-center gap-2">
-            GitHub <Github className="w-4 h-4" />
-          </a>
-        </div>
-      </div>
-    </footer>
-  );
-};
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import About from './components/About';
+import Services from './components/Services';
+import ProjectCard from './components/ProjectCard';
+import AssistantSection from './components/AssistantSection';
+import ContactSection from './components/ContactSection';
+import Footer from './components/Footer';
 
 // --- Main App ---
 
 export default function App() {
   const [ecoMode, setEcoMode] = useState(false);
   const [activeProject, setActiveProject] = useState<string | null>(null);
+  const [language, setLanguage] = useState<Language>('es');
+
+  const t: Record<Language, Translation> = {
+    es: {
+      about: "Sobre Mí",
+      services: "Servicios",
+      projects: "Proyectos",
+      contact: "Hablemos",
+      ecoOn: "Eco: ON",
+      ecoOff: "Eco: OFF",
+      heroTitle: "Transformando ideas en sistemas inteligentes",
+      heroSubtitle: "Software Developer | AI | Autonomous Agents",
+      heroDesc: "Especialista en la creación de agentes autónomos y soluciones de IA que optimizan procesos complejos. Con base en Panamá, ayudo a empresas a dar el salto hacia la automatización inteligente.",
+      aboutTitle: "De Android a la Inteligencia Artificial",
+      aboutDesc1: "Mi viaje comenzó en el desarrollo móvil, donde aprendí la importancia de la experiencia de usuario y el rendimiento. Sin embargo, mi curiosidad me llevó a explorar cómo las máquinas pueden razonar y tomar decisiones.",
+      aboutDesc2: "Hoy, me especializo en el desarrollo de agentes autónomos y sistemas de IA, combinando mi base sólida en ingeniería de software con las últimas innovaciones en modelos de lenguaje y automatización.",
+      servicesTitle: "Lo que hago",
+      service1: "Agentes Autónomos",
+      service1Desc: "Diseño y desarrollo de sistemas que pueden ejecutar tareas complejas de forma independiente utilizando LLMs.",
+      service2: "Chatbots Inteligentes",
+      service2Desc: "Creación de asistentes conversacionales avanzados con memoria, herramientas y razonamiento contextual.",
+      service3: "Desarrollo Mobile",
+      service3Desc: "Aplicaciones móviles robustas y escalables, ahora potenciadas con capacidades de IA nativas.",
+      projectsTitle: "Proyectos Destacados",
+      projectsDesc: "Una muestra de mi experiencia en IA y automatización.",
+      project1Title: "Finanzas personales con IA",
+      project1Tag: "Beta | Asistente Financiero IA",
+      project1Challenge: "¿Muchas veces gastamos nuestro salario y a la final no sabemos en qué se fue todo?",
+      project1Solution: "Sistema centralizado donde puedes registrar ingresos, gastos, deudas, etc y con la ayuda del agente integrado, darte asesoría personalizada.",
+      project2Title: "Vet Agenda",
+      project2Tag: "Alfa | Gestión Veterinaria",
+      project2Challenge: "Un veterinario independiente se le dificulta centralizar su listado de clientes y pacientes sin que el sistema sea costoso.",
+      project2Solution: "Sistema que captura de manera digital los datos de clientes y pacientes, permitiendo comunicación y seguimiento fluido.",
+      project3Title: "Predictor de Resultados de Parley",
+      project3Tag: "Pre-Alfa | Analítica Deportiva",
+      project3Challenge: "Predecir resultados deportivos con precisión requiere procesar volúmenes masivos de datos históricos y en tiempo real.",
+      project3Solution: "Modelo de IA diseñado para analizar estadísticas y tendencias, optimizando la toma de decisiones en apuestas deportivas.",
+      project4Title: "Abso: Texto a ASL",
+      project4Tag: "Pre-Alfa | Tecnología de Accesibilidad",
+      project4Challenge: "La barrera de comunicación entre personas oyentes y la comunidad sorda que utiliza ASL.",
+      project4Solution: "Traductor inteligente que convierte texto en representaciones visuales de lenguaje de señas en tiempo real.",
+      feedbackTitle: "Asistente de Kevin",
+      feedbackStatus: "Listo para dialogar",
+      feedbackPlaceholder: "Escribe tu mensaje aquí...",
+      feedbackSending: "Enviando...",
+      feedbackButton: "Contáctame ahora",
+      feedbackSuccess: "¡Mensaje Recibido!",
+      feedbackSuccessDesc: "Tu mensaje ha sido enviado a Kevin. Gracias por el interés.",
+      feedbackError: "Hubo un problema al enviar el mensaje. Por favor, intenta de nuevo o escríbeme directamente.",
+    },
+    en: {
+      about: "About Me",
+      services: "Services",
+      projects: "Projects",
+      contact: "Let's Talk",
+      ecoOn: "Eco: ON",
+      ecoOff: "Eco: OFF",
+      heroTitle: "Transforming ideas into intelligent systems",
+      heroSubtitle: "Software Developer | AI | Autonomous Agents",
+      heroDesc: "Specialist in creating autonomous agents and AI solutions that optimize complex processes. Based in Panama, I help companies leap towards intelligent automation.",
+      aboutTitle: "From Android to Artificial Intelligence",
+      aboutDesc1: "My journey began in mobile development, where I learned the importance of user experience and performance. However, my curiosity led me to explore how machines can reason and make decisions.",
+      aboutDesc2: "Today, I specialize in developing autonomous agents and AI systems, combining my solid software engineering foundation with the latest innovations in language models and automation.",
+      servicesTitle: "What I do",
+      service1: "Autonomous Agents",
+      service1Desc: "Design and development of systems that can execute complex tasks independently using LLMs.",
+      service2: "Intelligent Chatbots",
+      service2Desc: "Creation of advanced conversational assistants with memory, tools, and contextual reasoning.",
+      service3: "Mobile Development",
+      service3Desc: "Robust and scalable mobile applications, now enhanced with native AI capabilities.",
+      projectsTitle: "Featured Projects",
+      projectsDesc: "A showcase of my expertise in AI and automation.",
+      project1Title: "AI Personal Finance",
+      project1Tag: "Beta | AI Financial Assistant",
+      project1Challenge: "Often we spend our salary and in the end we don't know where it all went.",
+      project1Solution: "Centralized system where you can register income, expenses, debts, etc., and get personalized advice from an integrated agent.",
+      project2Title: "Vet Agenda",
+      project2Tag: "Alpha | Veterinary Management",
+      project2Challenge: "Independent veterinarians struggle to centralize client and patient data without expensive systems.",
+      project2Solution: "Digital system that captures client and patient data, enabling seamless communication and follow-up.",
+      project3Title: "Parley Result Predictor",
+      project3Tag: "Pre-Alpha | Sports Analytics",
+      project3Challenge: "Predicting sports results accurately requires processing massive volumes of historical and real-time data.",
+      project3Solution: "AI model designed to analyze statistics and trends, optimizing decision-making in sports betting.",
+      project4Title: "Abso: Text to ASL",
+      project4Tag: "Pre-Alpha | Accessibility Tech",
+      project4Challenge: "The communication barrier between hearing people and the deaf community using ASL.",
+      project4Solution: "Intelligent translator that converts text into visual sign language representations in real-time.",
+      feedbackTitle: "Kevin's Assistant",
+      feedbackStatus: "Ready to chat",
+      feedbackPlaceholder: "Write your message here...",
+      feedbackSending: "Sending...",
+      feedbackButton: "Contact me now",
+      feedbackSuccess: "Message Received!",
+      feedbackSuccessDesc: "Your message has been sent to Kevin. Thanks for your interest.",
+      feedbackError: "There was a problem sending the message. Please try again or email me directly.",
+    }
+  };
+
+  const currentT = t[language];
 
   return (
     <div className={cn(
       "min-h-screen transition-colors duration-1000 selection:bg-primary selection:text-on-primary",
       ecoMode ? "bg-black" : "bg-surface"
     )}>
-      <Navbar ecoMode={ecoMode} setEcoMode={setEcoMode} />
+      <Navbar 
+        ecoMode={ecoMode} 
+        setEcoMode={setEcoMode} 
+        language={language} 
+        setLanguage={setLanguage} 
+        t={currentT} 
+      />
       
       <main>
-        <Hero />
-        <About />
-        <Services />
+        <Hero t={currentT} />
+        <About t={currentT} />
+        <Services t={currentT} />
         
-        <section id="work" className="py-32 px-8">
+        <section id="work" className="py-24 md:py-32 px-4 md:px-8">
           <div className="max-w-screen-2xl mx-auto">
-            <div className="mb-32 flex flex-col md:flex-row justify-between items-end gap-8 border-b border-outline-variant pb-12">
+            <div className="mb-16 md:mb-32 flex flex-col md:flex-row justify-between items-end gap-8 border-b border-outline-variant pb-12">
               <div className="max-w-xl">
-                <h2 className="text-5xl font-black text-white tracking-tighter mb-4">Proyectos Destacados</h2>
+                <h2 className="text-4xl md:text-5xl font-black text-white tracking-tighter mb-4">{currentT.projectsTitle}</h2>
                 <p className="text-lg text-slate-500">
-                  Una muestra de mi experiencia en IA y automatización.
+                  {currentT.projectsDesc}
                 </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 gap-32">
+            <div className="grid grid-cols-1 gap-24 md:gap-32">
               <ProjectCard 
-                title="Finanzas personales con IA"
+                title={currentT.project1Title}
                 number="01"
-                tag="Beta | AI Financial Assistant"
+                tag={currentT.project1Tag}
                 ecoMode={ecoMode}
+                language={language}
                 onViewDetails={() => {
-                  setActiveProject("Finanzas personales con IA");
+                  setActiveProject(currentT.project1Title);
                   document.getElementById('feedback')?.scrollIntoView({ behavior: 'smooth' });
                   window.open("https://fincop-gesti-n-financiera-942659135887.us-west1.run.app", "_blank");
                 }}
-                challenge="Muchas veces gastamos nuestro salario y a la final no sabemos en qué se fue todo?"
-                solution="Sistema centralizado donde puedes registrar ingresos, gastos, deudas, etc y con la ayuda del agente integrado, darte asesoría personalizada."
+                challenge={currentT.project1Challenge}
+                solution={currentT.project1Solution}
                 image="https://picsum.photos/seed/finance-ai/1200/675"
               />
               
               <ProjectCard 
-                title="Vet Agenda"
+                title={currentT.project2Title}
                 number="02"
                 delay={0.2}
-                tag="Alfa | Veterinary Management"
+                tag={currentT.project2Tag}
                 ecoMode={ecoMode}
+                language={language}
                 onViewDetails={() => {
-                  setActiveProject("Vet Agenda");
+                  setActiveProject(currentT.project2Title);
                   document.getElementById('feedback')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                challenge="Un veterinario independiente se le dificulta centralizar su listado de clientes, tener los datos de sus pacientes, sin que el sistema sea costoso."
-                solution="Sistema que captura de manera digital los datos de sus clientes y pacientes, permitiendo tener comunicación y seguimiento mediante el sistema."
+                challenge={currentT.project2Challenge}
+                solution={currentT.project2Solution}
                 image="https://picsum.photos/seed/vet-agenda/1200/675"
               />
 
               <ProjectCard 
-                title="Predictor de resultados de parley"
+                title={currentT.project3Title}
                 number="03"
                 delay={0.3}
-                tag="Pre-Alfa | Sports Analytics"
+                tag={currentT.project3Tag}
                 ecoMode={ecoMode}
+                language={language}
                 onViewDetails={() => {
-                  setActiveProject("Predictor de Parley");
+                  setActiveProject(currentT.project3Title);
                   document.getElementById('feedback')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                challenge="Predecir resultados deportivos con precisión requiere procesar volúmenes masivos de datos históricos y en tiempo real."
-                solution="Modelo de IA diseñado para analizar estadísticas y tendencias, optimizando la toma de decisiones en apuestas deportivas."
+                challenge={currentT.project3Challenge}
+                solution={currentT.project3Solution}
                 image="https://picsum.photos/seed/sports-ai/1200/675"
               />
 
               <ProjectCard 
-                title="Abso: Interpretación de texto a ASL"
+                title={currentT.project4Title}
                 number="04"
                 delay={0.4}
-                tag="Pre-Alfa | Accessibility Tech"
+                tag={currentT.project4Tag}
                 ecoMode={ecoMode}
+                language={language}
                 onViewDetails={() => {
-                  setActiveProject("Abso: Texto a ASL");
+                  setActiveProject(currentT.project4Title);
                   document.getElementById('feedback')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                challenge="La barrera de comunicación entre personas oyentes y la comunidad sorda que utiliza ASL (American Sign Language)."
-                solution="Traductor inteligente que convierte texto en representaciones visuales de lenguaje de señas en tiempo real."
+                challenge={currentT.project4Challenge}
+                solution={currentT.project4Solution}
                 image="https://picsum.photos/seed/asl-ai/1200/675"
               />
             </div>
           </div>
         </section>
 
-        <AssistantSection activeProject={activeProject} />
-        <ContactSection />
+        <AssistantSection 
+          activeProject={activeProject} 
+          setActiveProject={setActiveProject} 
+          language={language}
+          t={currentT}
+        />
+        <ContactSection t={currentT} />
       </main>
 
-      <Footer />
+      <Footer t={currentT} />
     </div>
   );
 }

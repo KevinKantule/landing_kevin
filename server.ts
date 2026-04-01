@@ -5,6 +5,8 @@ import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import cors from "cors";
+import validator from "validator";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,23 +20,40 @@ async function startServer() {
     contentSecurityPolicy: false, // Disable CSP for Vite dev server compatibility
   }));
 
+  // CORS Configuration
+  app.use(cors({
+    origin: process.env.NODE_ENV === 'production' ? process.env.APP_URL : '*',
+    methods: ['POST'],
+  }));
+
   // Rate Limiting to prevent spam
   const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 10, // Limit each IP to 10 requests per window
-    message: { success: false, error: "Demasiados pensamientos enviados. Por favor, espera un momento." }
+    max: 5, // Limit each IP to 5 requests per window
+    message: { success: false, error: "Demasiados mensajes enviados. Por favor, intenta más tarde." }
   });
 
   app.use("/api/", limiter);
-  app.use(express.json({ limit: '10kb' })); // Limit body size
+  app.use(express.json({ limit: '5kb' })); // Limit body size
 
   // API Route for Feedback
   app.post("/api/feedback", async (req, res) => {
-    const { message, projectContext } = req.body;
+    let { message, projectContext } = req.body;
     
-    // Basic Input Validation
-    if (!message || typeof message !== 'string' || message.length > 1000) {
-      return res.status(400).json({ success: false, error: "Mensaje inválido o demasiado largo." });
+    // Input Validation & Sanitization
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ success: false, error: "El mensaje es obligatorio." });
+    }
+
+    // Sanitize message: remove HTML tags and trim
+    message = validator.escape(message.trim());
+    message = validator.whitelist(message, 'a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,!?;:()\\s'); // Basic whitelist
+    
+    if (message.length < 5) {
+      return res.status(400).json({ success: false, error: "El mensaje es demasiado corto." });
+    }
+    if (message.length > 500) {
+      return res.status(400).json({ success: false, error: "El mensaje no puede exceder los 500 caracteres." });
     }
 
     const targetEmail = "kevin.kantule@gmail.com";
@@ -74,18 +93,18 @@ async function startServer() {
     try {
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
         await transporter.sendMail(mailOptions);
-        res.json({ success: true, message: "¡Pensamiento enviado por correo!" });
+        res.json({ success: true, message: "¡Mensaje enviado correctamente!" });
       } else {
-        console.warn("[Feedback] EMAIL_USER o EMAIL_PASS no configurados en el entorno.");
+        console.warn("[Feedback] EMAIL_USER o EMAIL_PASS no configurados.");
         res.json({ 
           success: true, 
-          message: "Simulado: Configura EMAIL_USER y EMAIL_PASS en Secretos para recibirlo en kevin.kantule@gmail.com",
+          message: "Simulado: Configura EMAIL_USER y EMAIL_PASS para recibirlo.",
           simulated: true 
         });
       }
     } catch (error) {
       console.error("[Feedback] Error al enviar correo:", error);
-      res.status(500).json({ success: false, error: "Error al procesar el envío." });
+      res.status(500).json({ success: false, error: "Error al procesar el envío del mensaje." });
     }
   });
 

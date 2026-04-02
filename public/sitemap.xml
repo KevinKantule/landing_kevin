@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://kevinkantule.com</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://picsum.photos/seed/tech-profile/1200/630</image:loc>
+      <image:title>Kevin Kantule - Software Developer</image:title>
+    </image:image>
+  </url>
+
+  <!-- About Section -->
+  <url>
+    <loc>https://kevinkantule.com/#about</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Services Section -->
+  <url>
+    <loc>https://kevinkantule.com/#services</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Portfolio Section -->
+  <url>
+    <loc>https://kevinkantule.com/#work</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <image:image>
+      <image:loc>https://picsum.photos/seed/finance-ai/1200/675</image:loc>
+      <image:title>Finanzas personales con IA</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://picsum.photos/seed/vet-agenda/1200/675</image:loc>
+      <image:title>Vet Agenda</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://picsum.photos/seed/sports-ai/1200/675</image:loc>
+      <image:title>Predictor de Parley</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://picsum.photos/seed/asl-ai/1200/675</image:loc>
+      <image:title>Abso: Texto a ASL</image:title>
+    </image:image>
+  </url>
+
+  <!-- Contact Section -->
+  <url>
+    <loc>https://kevinkantule.com/#contact</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Feedback/Engagement Section -->
+  <url>
+    <loc>https://kevinkantule.com/#feedback</loc>
+    <lastmod>2026-04-02</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

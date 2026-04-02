@@ -7,6 +7,8 @@ import React, { useState } from 'react';
 import { cn } from './lib/utils';
 import { useAdaptivePreferences } from './hooks/useAdaptivePreferences';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { SEO } from './components/SEO';
+import { SchemaOrg } from './components/SchemaOrg';
 
 // Section Components
 import { Navbar } from './components/Navbar';
@@ -24,7 +26,10 @@ function AppContent() {
   const { prefersReducedMotion } = useAdaptivePreferences();
 
   return (
-    <div
+    <>
+      <SEO />
+      <SchemaOrg />
+      <div
       className={cn(
         'min-h-screen selection:bg-primary selection:text-on-primary',
         prefersReducedMotion ? 'transition-none' : 'transition-colors duration-1000',
@@ -43,7 +48,8 @@ function AppContent() {
       </main>
 
       <Footer />
-    </div>
+      </div>
+    </>
   );
 }
 

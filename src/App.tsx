@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { cn } from './lib/utils';
 import { useAdaptivePreferences, useConnectionStatus } from './hooks/useAdaptivePreferences';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 // --- Components ---
 
@@ -326,11 +327,13 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
   const [feedback, setFeedback] = useState('');
   const [isSent, setIsSent] = useState(false);
   const [isSending, setIsSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { prefersReducedMotion } = useAdaptivePreferences();
 
   const handleSend = async () => {
     if (!feedback.trim()) return;
-    
+
+    setError(null);
     setIsSending(true);
     const userMessage = feedback;
     setFeedback('');
@@ -339,9 +342,9 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
       const response = await fetch('/api/feedback', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          message: userMessage, 
-          projectContext: activeProject || 'General' 
+        body: JSON.stringify({
+          message: userMessage,
+          projectContext: activeProject || 'General'
         }),
       });
 
@@ -351,10 +354,16 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
         setIsSent(true);
         setTimeout(() => setIsSent(false), 5000);
       } else {
-        throw new Error(data.error || 'Failed to send');
+        setError(data.error || 'Error al enviar el mensaje. Intenta de nuevo.');
+        setFeedback(userMessage); // Restore message on error
       }
-    } catch (error) {
-      console.error("Error sending feedback:", error);
+    } catch (err) {
+      const errorMessage = err instanceof Error
+        ? err.message
+        : 'Error de conexión. Por favor, verifica tu internet e intenta de nuevo.';
+      setError(errorMessage);
+      setFeedback(userMessage); // Restore message on error
+      console.error("Error sending feedback:", err);
     } finally {
       setIsSending(false);
     }
@@ -381,6 +390,24 @@ const AssistantSection = ({ activeProject }: { activeProject: string | null }) =
                 <CheckCircle2 className="w-16 h-16 text-primary mb-4" />
                 <h3 className="text-2xl font-bold text-white mb-2">¡Mensaje Recibido!</h3>
                 <p className="text-slate-300">Tu mensaje ha sido enviado a Kevin. Gracias por el interés.</p>
+              </motion.div>
+            )}
+            {error && (
+              <motion.div
+                initial={{ opacity: 0, y: prefersReducedMotion ? 0 : 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: prefersReducedMotion ? 0 : -20 }}
+                className="absolute inset-0 bg-red-900/20 backdrop-blur-md z-10 flex flex-col items-center justify-center text-center p-8"
+              >
+                <AlertCircle className="w-16 h-16 text-red-400 mb-4" />
+                <h3 className="text-2xl font-bold text-white mb-2">Error al enviar</h3>
+                <p className="text-red-200 mb-6">{error}</p>
+                <button
+                  onClick={() => setError(null)}
+                  className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-full font-bold transition-colors"
+                >
+                  Cerrar
+                </button>
               </motion.div>
             )}
           </AnimatePresence>
@@ -506,7 +533,7 @@ const Footer = () => {
 
 // --- Main App ---
 
-export default function App() {
+function AppContent() {
   const [ecoMode, setEcoMode] = useState(false);
   const [activeProject, setActiveProject] = useState<string | null>(null);
   const { prefersReducedMotion, isTouchDevice } = useAdaptivePreferences();
@@ -518,7 +545,7 @@ export default function App() {
       ecoMode ? "bg-black" : "bg-surface"
     )}>
       <Navbar ecoMode={ecoMode} setEcoMode={setEcoMode} />
-      
+
       <main>
         <Hero />
         <About />
@@ -605,6 +632,14 @@ export default function App() {
 
       <Footer />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <AppContent />
+    </ErrorBoundary>
   );
 }
 

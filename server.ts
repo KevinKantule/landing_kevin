@@ -5,6 +5,7 @@ import nodemailer from "nodemailer";
 import { fileURLToPath } from "url";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
+import { GoogleGenerativeAI } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -86,6 +87,47 @@ async function startServer() {
     } catch (error) {
       console.error("[Feedback] Error al enviar correo:", error);
       res.status(500).json({ success: false, error: "Error al procesar el envío." });
+    }
+  });
+
+  // API Route for AI Chat (SECURE - API Key never exposed to client)
+  app.post("/api/ai-chat", async (req, res) => {
+    const { message } = req.body;
+
+    // Validate input
+    if (!message || typeof message !== 'string' || message.length > 5000) {
+      return res.status(400).json({
+        success: false,
+        error: "Mensaje inválido o demasiado largo (máx 5000 caracteres)."
+      });
+    }
+
+    // Check if API key is configured
+    if (!process.env.GEMINI_API_KEY) {
+      console.warn("[AI Chat] GEMINI_API_KEY no configurada");
+      return res.status(500).json({
+        success: false,
+        error: "Servicio de IA no disponible actualmente."
+      });
+    }
+
+    try {
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+      const result = await model.generateContent(message);
+      const responseText = result.response.text();
+
+      res.json({
+        success: true,
+        response: responseText
+      });
+    } catch (error) {
+      console.error("[AI Chat] Error:", error);
+      res.status(500).json({
+        success: false,
+        error: "Error al procesar la solicitud de IA."
+      });
     }
   });
 

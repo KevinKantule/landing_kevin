@@ -6,14 +6,22 @@ import { fileURLToPath } from "url";
 import * as genai from "@google/genai";
 import { env } from "./src/config/env.js";
 import { initializeSecurityMiddleware } from "./src/middleware/security.js";
+import { initializeSentry } from "./src/config/sentry.js";
+import { attachSentryMiddleware } from "./src/middleware/sentry.js";
 
 const GoogleGenerativeAI = (genai as any).GoogleGenerativeAI;
+
+// Initialize Sentry before anything else
+initializeSentry();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
   const app = express();
+
+  // Attach Sentry middleware (must be early)
+  attachSentryMiddleware(app);
 
   // Initialize security middleware
   const { limiters, csrfProtection } = initializeSecurityMiddleware(app);

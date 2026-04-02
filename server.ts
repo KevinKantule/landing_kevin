@@ -77,7 +77,7 @@ async function startServer() {
     try {
       if (env.EMAIL_USER && env.EMAIL_PASS) {
         await transporter.sendMail(mailOptions);
-        res.json({ success: true, message: "¡Pensamiento enviado por correo!" });
+        res.json({ success: true, message: "¡Mensaje enviado correctamente!" });
       } else {
         console.warn("[Feedback] EMAIL_USER o EMAIL_PASS no configurados en el entorno.");
         res.json({
@@ -88,7 +88,7 @@ async function startServer() {
       }
     } catch (error) {
       console.error("[Feedback] Error al enviar correo:", error);
-      res.status(500).json({ success: false, error: "Error al procesar el envío." });
+      res.status(500).json({ success: false, error: "Error al procesar el envío del mensaje." });
     }
   });
 

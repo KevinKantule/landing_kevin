@@ -44,6 +44,9 @@ export interface Translation {
   feedbackSuccess: string;
   feedbackSuccessDesc: string;
   feedbackError: string;
+  nameLabel: string;
+  emailLabel: string;
+  phoneLabel: string;
 }
 
 export type Language = 'es' | 'en';

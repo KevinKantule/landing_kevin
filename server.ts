@@ -38,29 +38,34 @@ async function startServer() {
 
   // API Route for Feedback
   app.post("/api/feedback", async (req, res) => {
-    let { message, projectContext } = req.body;
+    let { message, name, email, phone, projectContext } = req.body;
     
     // Input Validation & Sanitization
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ success: false, error: "El mensaje es obligatorio." });
     }
+    if (!name || typeof name !== 'string') {
+      return res.status(400).json({ success: false, error: "El nombre es obligatorio." });
+    }
+    if (!email || typeof email !== 'string' || !validator.isEmail(email)) {
+      return res.status(400).json({ success: false, error: "Un correo electrónico válido es obligatorio." });
+    }
 
-    // Sanitize message: remove HTML tags and trim
+    // Sanitize inputs
     message = validator.escape(message.trim());
-    message = validator.whitelist(message, 'a-zA-Z0-9áéíóúÁÉÍÓÚñÑ.,!?;:()\\s'); // Basic whitelist
+    name = validator.escape(name.trim());
+    email = validator.normalizeEmail(email) || email;
+    phone = phone ? validator.escape(String(phone).trim()) : "No proporcionado";
     
     if (message.length < 5) {
       return res.status(400).json({ success: false, error: "El mensaje es demasiado corto." });
-    }
-    if (message.length > 500) {
-      return res.status(400).json({ success: false, error: "El mensaje no puede exceder los 500 caracteres." });
     }
 
     const targetEmail = "kevin.kantule@gmail.com";
     const contextInfo = projectContext ? `Proyecto: ${projectContext}` : "General / Sin contexto específico";
     const timestamp = new Date().toLocaleString('es-PA', { timeZone: 'America/Panama' });
 
-    console.log(`[Feedback] Recibido para ${targetEmail}:`, { message, contextInfo });
+    console.log(`[Feedback] Recibido de ${name} (${email}):`, { message, contextInfo });
 
     // Configuración de Nodemailer
     const transporter = nodemailer.createTransport({
@@ -74,15 +79,20 @@ async function startServer() {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: targetEmail,
-      subject: `PORTAFOLIO: Nuevo mensaje sobre [${projectContext || 'General'}] - ${timestamp}`,
-      text: `Has recibido un nuevo mensaje de tu portafolio:\n\nFecha: ${timestamp}\nContexto: ${contextInfo}\n\nMensaje: "${message}"`,
+      subject: `PORTAFOLIO: Mensaje de ${name} sobre [${projectContext || 'General'}]`,
+      text: `Has recibido un nuevo mensaje de tu portafolio:\n\nFecha: ${timestamp}\nNombre: ${name}\nEmail: ${email}\nTeléfono: ${phone}\nContexto: ${contextInfo}\n\nMensaje: "${message}"`,
       html: `
         <div style="font-family: sans-serif; padding: 20px; color: #333; max-width: 600px; border: 1px solid #eee; border-radius: 10px;">
           <h2 style="color: #0033a7; margin-bottom: 20px;">Nuevo mensaje del Portafolio</h2>
           <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
             <p style="font-size: 14px; color: #666; margin: 0 0 5px 0;"><strong>Fecha:</strong> ${timestamp}</p>
+            <p style="font-size: 14px; color: #666; margin: 0 0 5px 0;"><strong>Nombre:</strong> ${name}</p>
+            <p style="font-size: 14px; color: #666; margin: 0 0 5px 0;"><strong>Email:</strong> ${email}</p>
+            <p style="font-size: 14px; color: #666; margin: 0 0 5px 0;"><strong>Teléfono:</strong> ${phone}</p>
             <p style="font-size: 14px; color: #666; margin: 0 0 10px 0;"><strong>Contexto:</strong> ${contextInfo}</p>
-            <p style="font-size: 16px; line-height: 1.6; color: #1a1a1a; margin: 0; padding-top: 10px; border-top: 1px solid #ddd;">"${message}"</p>
+            <div style="padding-top: 10px; border-top: 1px solid #ddd;">
+              <p style="font-size: 16px; line-height: 1.6; color: #1a1a1a; margin: 0;">"${message}"</p>
+            </div>
           </div>
           <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;" />
           <p style="font-size: 11px; color: #999; text-align: center;">Enviado desde tu portafolio profesional.</p>

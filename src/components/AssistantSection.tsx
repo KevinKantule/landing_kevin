@@ -13,17 +13,22 @@ interface AssistantSectionProps {
 
 const AssistantSection: React.FC<AssistantSectionProps> = ({ activeProject, language, t }) => {
   const [feedback, setFeedback] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [isSent, setIsSent] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSend = async () => {
-    if (!feedback.trim()) return;
+    if (!feedback.trim() || !name.trim() || !email.trim()) return;
     
     setIsSending(true);
     setError(null);
     const userMessage = feedback;
-    setFeedback('');
+    const userName = name;
+    const userEmail = email;
+    const userPhone = phone;
 
     try {
       const response = await fetch('/api/feedback', {
@@ -31,6 +36,9 @@ const AssistantSection: React.FC<AssistantSectionProps> = ({ activeProject, lang
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message: userMessage, 
+          name: userName,
+          email: userEmail,
+          phone: userPhone,
           projectContext: activeProject || 'General' 
         }),
       });
@@ -39,6 +47,10 @@ const AssistantSection: React.FC<AssistantSectionProps> = ({ activeProject, lang
 
       if (data.success) {
         setIsSent(true);
+        setFeedback('');
+        setName('');
+        setEmail('');
+        setPhone('');
         setTimeout(() => setIsSent(false), 5000);
       } else {
         throw new Error(data.error || 'Failed to send');
@@ -46,7 +58,6 @@ const AssistantSection: React.FC<AssistantSectionProps> = ({ activeProject, lang
     } catch (err: any) {
       console.error("Error sending feedback:", err);
       setError(err.message || "Error");
-      setFeedback(userMessage);
     } finally {
       setIsSending(false);
     }
@@ -99,6 +110,35 @@ const AssistantSection: React.FC<AssistantSectionProps> = ({ activeProject, lang
             </div>
           </div>
 
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <input 
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder={t.nameLabel}
+              className="bg-surface-container-highest/30 border-none rounded-xl p-4 text-white placeholder-slate-600 focus:ring-2 focus:ring-primary transition-all"
+              disabled={isSending}
+            />
+            <input 
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={t.emailLabel}
+              className="bg-surface-container-highest/30 border-none rounded-xl p-4 text-white placeholder-slate-600 focus:ring-2 focus:ring-primary transition-all"
+              disabled={isSending}
+            />
+          </div>
+          <div className="mb-4">
+            <input 
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder={t.phoneLabel}
+              className="w-full bg-surface-container-highest/30 border-none rounded-xl p-4 text-white placeholder-slate-600 focus:ring-2 focus:ring-primary transition-all"
+              disabled={isSending}
+            />
+          </div>
+
           <div className="relative">
             <textarea 
               value={feedback}
@@ -134,7 +174,7 @@ const AssistantSection: React.FC<AssistantSectionProps> = ({ activeProject, lang
               </div>
               <button 
                 onClick={handleSend}
-                disabled={!feedback.trim() || isSending}
+                disabled={!feedback.trim() || !name.trim() || !email.trim() || isSending}
                 id="contact-btn"
                 className="bg-primary text-on-primary px-8 py-3 rounded-full font-black flex items-center gap-2 hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
               >

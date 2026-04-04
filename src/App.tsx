@@ -71,6 +71,9 @@ export default function App() {
       feedbackSuccess: "¡Mensaje Recibido!",
       feedbackSuccessDesc: "Tu mensaje ha sido enviado a Kevin. Gracias por el interés.",
       feedbackError: "Hubo un problema al enviar el mensaje. Por favor, intenta de nuevo o escríbeme directamente.",
+      nameLabel: "Nombre",
+      emailLabel: "Correo Electrónico",
+      phoneLabel: "Teléfono (Opcional)",
     },
     en: {
       about: "About Me",
@@ -118,6 +121,9 @@ export default function App() {
       feedbackSuccess: "Message Received!",
       feedbackSuccessDesc: "Your message has been sent to Kevin. Thanks for your interest.",
       feedbackError: "There was a problem sending the message. Please try again or email me directly.",
+      nameLabel: "Name",
+      emailLabel: "Email Address",
+      phoneLabel: "Phone (Optional)",
     }
   };
 
